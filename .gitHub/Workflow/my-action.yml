@@ -1,0 +1,26 @@
+name: Update README on Fork
+
+on:
+  fork:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Update README
+        run: |
+          USERNAME="${{ github.actor }}"
+          NEW_LINK="https://dashboard.heroku.com/new?template=https://github.com/$USERNAME/StonexchatBot"
+          sed -i "s|https://dashboard.heroku.com/new?template=https://github.com/.*/StonexchatBot|$NEW_LINK|g" README.md
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "Update Heroku deployment link for forked repository"
+          git push
